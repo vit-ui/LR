@@ -233,7 +233,68 @@ dados pesquisa(celula *l, int chave)
 
 void insereOrdenado(celula *l, dados d)
 {
- //[FAZER]
+  cout << endl << endl << "Inserindo ordenadamente registros" << endl;
+
+    if (l[0].cabecalho.free == -1)
+    {
+        cout << "Lista cheia!!!" << endl;
+        return;
+    }
+
+    // Pegando a posição livre
+    int novo = l[0].cabecalho.free;
+    l[0].cabecalho.free = l[novo].lista.next;
+
+    // Atribuindo os dados
+    l[novo].lista.reg = d;
+    l[0].cabecalho.quant++;
+
+    // Caso a lista esteja vazia
+    if (l[0].cabecalho.first == -1)
+    {
+        l[0].cabecalho.first = novo;
+        l[0].cabecalho.last = novo;
+        l[novo].lista.next = -1;
+        l[novo].lista.prev = -1;
+        return;
+    }
+
+    int atual = l[0].cabecalho.first;
+
+    // Verifica se deve ser inserido no início
+    if (d.chave < l[atual].lista.reg.chave)
+    {
+        l[novo].lista.next = atual;
+        l[novo].lista.prev = -1;
+        l[atual].lista.prev = novo;
+        l[0].cabecalho.first = novo;
+        return;
+    }
+
+    // Percorre para encontrar a posição correta
+    while (atual != -1 && l[atual].lista.reg.chave < d.chave)
+    {
+        atual = l[atual].lista.next;
+    }
+
+    // Inserção no final
+    if (atual == -1)
+    {
+        int ultimo = l[0].cabecalho.last;
+        l[ultimo].lista.next = novo;
+        l[novo].lista.prev = ultimo;
+        l[novo].lista.next = -1;
+        l[0].cabecalho.last = novo;
+        return;
+    }
+
+    // Inserção no meio
+    int anterior = l[atual].lista.prev;
+    l[novo].lista.next = atual;
+    l[novo].lista.prev = anterior;
+    l[atual].lista.prev = novo;
+    l[anterior].lista.next = novo;
+
 }
 
 
