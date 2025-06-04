@@ -230,7 +230,6 @@ dados pesquisa(celula *l, int chave)
 	return dados();
 }
 
-
 void insereOrdenado(celula *l, dados d)
 {
   cout << endl << endl << "Inserindo ordenadamente registros" << endl;
