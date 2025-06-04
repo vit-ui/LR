@@ -32,6 +32,11 @@ union celula
     } lista;
 };
 
+dados operator+=(dados d, const dados c){
+    d.chave += c.chave;
+    return c;
+}
+
 void inicializa(celula *l, int n)
 {
     /*Criando e inicializando a estrutura de dados*/
@@ -215,6 +220,16 @@ void imprimeEstrutura(celula *l, int n)
    
 }
 
+int SomaChaves(celula *l){
+    int soma = 0;
+    //soma.chave = 0;
+    int j = 0;
+    for(int i = l[0].cabecalho.first; j < l[0].cabecalho.quant; i = l[i].lista.next, j++){
+        soma += l[i].lista.reg.chave;
+    }
+    return soma;
+}
+
 dados pesquisa(celula *l, int chave)
 {
 	if(l[0].cabecalho.quant != 0)
@@ -230,74 +245,94 @@ dados pesquisa(celula *l, int chave)
 	return dados();
 }
 
-void insereOrdenado(celula *l, dados d)
-{
-  cout << endl << endl << "Inserindo ordenadamente registros" << endl;
+// //void insereOrdenado(celula *l, dados d)
+// {
+//   cout << endl << endl << "Inserindo ordenadamente registros" << endl;
 
-    if (l[0].cabecalho.free == -1)
-    {
-        cout << "Lista cheia!!!" << endl;
-        return;
-    }
+//     if (l[0].cabecalho.free == -1)
+//     {
+//         cout << "Lista cheia!!!" << endl;
+//         return;
+//     }
 
-    // Pegando a posição livre
-    int novo = l[0].cabecalho.free;
-    l[0].cabecalho.free = l[novo].lista.next;
+//     // Pegando a posição livre
+//     int novo = l[0].cabecalho.free;
+//     l[0].cabecalho.free = l[novo].lista.next;
 
-    // Atribuindo os dados
-    l[novo].lista.reg = d;
-    l[0].cabecalho.quant++;
+//     // Atribuindo os dados
+//     l[novo].lista.reg = d;
+//     l[0].cabecalho.quant++;
 
-    // Caso a lista esteja vazia
-    if (l[0].cabecalho.first == -1)
-    {
-        l[0].cabecalho.first = novo;
-        l[0].cabecalho.last = novo;
-        l[novo].lista.next = -1;
-        l[novo].lista.prev = -1;
-        return;
-    }
+//     // Caso a lista esteja vazia
+//     if (l[0].cabecalho.first == -1)
+//     {
+//         l[0].cabecalho.first = novo;
+//         l[0].cabecalho.last = novo;
+//         l[novo].lista.next = -1;
+//         l[novo].lista.prev = -1;
+//         return;
+//     }
 
+//     int atual = l[0].cabecalho.first;
+
+//     // Verifica se deve ser inserido no início
+//     if (d.chave < l[atual].lista.reg.chave)
+//     {
+//         l[novo].lista.next = atual;
+//         l[novo].lista.prev = -1;
+//         l[atual].lista.prev = novo;
+//         l[0].cabecalho.first = novo;
+//         return;
+//     }
+
+//     // Percorre para encontrar a posição correta
+//     while (atual != -1 && l[atual].lista.reg.chave < d.chave)
+//     {
+//         atual = l[atual].lista.next;
+//     }
+
+//     // Inserção no final
+//     if (atual == -1)
+//     {
+//         int ultimo = l[0].cabecalho.last;
+//         l[ultimo].lista.next = novo;
+//         l[novo].lista.prev = ultimo;
+//         l[novo].lista.next = -1;
+//         l[0].cabecalho.last = novo;
+//         return;
+//     }
+
+//     // Inserção no meio
+//     int anterior = l[atual].lista.prev;
+//     l[novo].lista.next = atual;
+//     l[novo].lista.prev = anterior;
+//     l[atual].lista.prev = novo;
+//     l[anterior].lista.next = novo;
+// }
+
+int MaiorChave(celula *l){
     int atual = l[0].cabecalho.first;
+    int proximo = l[atual].lista.next;
 
-    // Verifica se deve ser inserido no início
-    if (d.chave < l[atual].lista.reg.chave)
-    {
-        l[novo].lista.next = atual;
-        l[novo].lista.prev = -1;
-        l[atual].lista.prev = novo;
-        l[0].cabecalho.first = novo;
-        return;
+    for(int i = 0; i < l[0].cabecalho.quant; i++){
+        l[atual].lista.reg.chave < l[proximo].lista.reg.chave ? 
+        atual = l[atual].lista.next : proximo = l[proximo].lista.next;
     }
 
-    // Percorre para encontrar a posição correta
-    while (atual != -1 && l[atual].lista.reg.chave < d.chave)
-    {
-        atual = l[atual].lista.next;
-    }
-
-    // Inserção no final
-    if (atual == -1)
-    {
-        int ultimo = l[0].cabecalho.last;
-        l[ultimo].lista.next = novo;
-        l[novo].lista.prev = ultimo;
-        l[novo].lista.next = -1;
-        l[0].cabecalho.last = novo;
-        return;
-    }
-
-    // Inserção no meio
-    int anterior = l[atual].lista.prev;
-    l[novo].lista.next = atual;
-    l[novo].lista.prev = anterior;
-    l[atual].lista.prev = novo;
-    l[anterior].lista.next = novo;
-
+    return l[atual].lista.reg.chave;
 }
 
-
-
+int Derik(celula *l){
+    int maior = l[l[0].cabecalho.first].lista.reg.chave;
+    //soma.chave = 0
+    int j = 0;
+    for(int i = l[0].cabecalho.first; j < l[0].cabecalho.quant; i = l[i].lista.next, j++){
+        if(l[i].lista.reg.chave>maior){
+            maior=l[i].lista.reg.chave;
+        }
+    }
+    return maior;
+}
 
 int main()
 {
@@ -361,7 +396,7 @@ int main()
             case 6:
                 cout<<"Digite a chave a ser inserida: ";
                 cin>>d.chave;
-                insereOrdenado(lista,d);
+                //insereOrdenado(lista,d);
                 break;
 
             case 0:
@@ -371,6 +406,10 @@ int main()
         }
     }
     
+    std::cout << "Soma DAdos: " << SomaChaves(lista) << std::endl;
+    std::cout << "MaiorChave: " << MaiorChave(lista) << std::endl;
+    std::cout << "Derik: " << Derik(lista);
+
     delete [] lista;
     return 0;
 }
