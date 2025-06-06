@@ -322,6 +322,31 @@ int MaiorChave(celula *l){
     return l[atual].lista.reg.chave;
 }
 
+void ImprimeInverso(celula *l){
+    int j = 0;
+    for(int i = l[0].cabecalho.last; j < l[0].cabecalho.quant; i = l[i].lista.prev, j++){
+        std::cout << l[i].lista.reg.chave << " ";
+    }
+}
+
+dados RemoveMeio(celula *l){
+    int j = 0, i = l[0].cabecalho.first;
+    while(j < l[0].cabecalho.quant/2){
+        i = l[i].lista.next;
+        j++;
+    }
+    if(l[0].cabecalho.quant % 2 == 0)
+        i = l[i].lista.prev;
+
+    l[0].cabecalho.quant--;
+    l[l[i].lista.next].lista.prev = l[i].lista.prev;
+    l[l[i].lista.prev].lista.next = l[i].lista.next;
+    l[l[0].cabecalho.free].lista.prev = i;
+    l[0].cabecalho.free = i;
+
+    return l[i].lista.reg;
+}
+
 int Derik(celula *l){
     int maior = l[l[0].cabecalho.first].lista.reg.chave;
     //soma.chave = 0
@@ -406,10 +431,16 @@ int main()
         }
     }
     
-    std::cout << "Soma DAdos: " << SomaChaves(lista) << std::endl;
-    std::cout << "MaiorChave: " << MaiorChave(lista) << std::endl;
-    std::cout << "Derik: " << Derik(lista);
+    std::cout << "\nSoma DAdos: " << SomaChaves(lista) << std::endl;
+    std::cout << "\nMaiorChave: " << MaiorChave(lista) << std::endl;
+    std::cout << "\nDerik: " << Derik(lista);
 
+    std::cout << "\nImprimeInverso: ";
+    ImprimeInverso(lista);
+
+    dados dado = RemoveMeio(lista);
+    std::cout << "\nRemove Meio: " << dado.chave << std::endl;
+    imprimeRegistros(lista);
     delete [] lista;
     return 0;
 }
